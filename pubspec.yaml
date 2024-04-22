@@ -4,8 +4,7 @@ version: 0.6.3
 homepage: https://github.com/iminsoftware/imin_printer
 
 environment:
-  sdk: '>=3.0.6 <4.0.0' 
-  flutter: ">=3.3.0"
+  sdk: ">=2.18.4 <3.0.0"
 
 dependencies:
   flutter:
