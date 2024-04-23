@@ -80,6 +80,8 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
         } else {
             //初始化 1.0 SDK
             iminPrintUtils = IminPrintUtils.getInstance(_context);
+
+
             String deviceModel = Utils.getInstance().getModel();
             if (deviceModel.contains("M2-203") || deviceModel.contains("M2-202") || deviceModel.contains("M2-Pro")) {
                 connectType = IminPrintUtils.PrintConnectType.SPI;
@@ -87,6 +89,8 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                 connectType = IminPrintUtils.PrintConnectType.USB;
             }
             iminPrintUtils.resetDevice();
+            iminPrintUtils.setTextTypeface(Typeface.MONOSPACE);
+            iminPrintUtils.initParams();
             sdkVersion = "1.0.0";
         }
         eventChannel.setStreamHandler(this);
