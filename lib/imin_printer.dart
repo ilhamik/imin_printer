@@ -11,6 +11,11 @@ class IminPrinter {
   Future<String?> getSdkVersion() {
     return IminPrinterPlatform.instance.getSdkVersion();
   }
+
+  static Future<String?> getDeviceSn() {
+    return IminPrinterPlatform.instance.getDeviceSn();
+  }
+
   Stream<dynamic> get receiveBroadcastStream {
     return IminPrinterPlatform.instance.initEventChannel();
   }

@@ -36,6 +36,10 @@ abstract class IminPrinterPlatform extends PlatformInterface {
     throw UnimplementedError('getSdkVersion() has not been implemented.');
   }
 
+  Future<String?> getDeviceSn() {
+    throw UnimplementedError('getSdkVersion() has not been implemented.');
+  }
+
   Future<bool?> initPrinter() {
     throw UnimplementedError('initPrinter() has not been implemented.');
   }

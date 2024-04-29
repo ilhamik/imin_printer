@@ -1,7 +1,6 @@
 import 'enums.dart';
 
 class IminTextStyle {
-  bool? wordWrap;
   int? fontSize;
   double? space;
   int? width;
@@ -10,7 +9,7 @@ class IminTextStyle {
   IminPrintAlign? align;
 
   IminTextStyle(
-      {this.wordWrap,
+      {
       this.fontSize,
       this.align,
       this.space,
@@ -20,7 +19,6 @@ class IminTextStyle {
 }
 
 class IminTextPictureStyle {
-  bool? wordWrap;
   int? fontSize;
   IminTypeface? typeface;
   IminFontStyle? fontStyle;
@@ -32,7 +30,7 @@ class IminTextPictureStyle {
   bool? reverseWhite;
 
   IminTextPictureStyle(
-      {this.wordWrap,
+      {
       this.fontSize,
       this.align,
       this.fontStyle,

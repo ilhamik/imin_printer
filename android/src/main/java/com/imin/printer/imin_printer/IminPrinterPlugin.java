@@ -10,6 +10,7 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+import com.imin.library.SystemPropManager;
 import com.imin.printer.INeoPrinterCallback;
 import com.imin.printer.PrinterHelper;
 import com.imin.printerlib.Callback;
@@ -105,6 +106,17 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
             case "getSdkVersion":
                 result.success(sdkVersion);
                 break;
+            case "getDeviceSn":
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        result.success(SystemPropManager.getSystemProperties("persist.sys.imin.sn"));
+                    } else {
+                        result.success(SystemPropManager.getSn());
+                    }
+                    return;
+                }catch  (Exception ex){}
+                result.error("NO-SN", null, null);
+                break;
             case "initPrinter":
                 if (iminPrintUtils != null) {
                     iminPrintUtils.initPrinter(connectType);
@@ -112,6 +124,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                 } else {
                     Log.d(TAG, _context.getPackageName());
                     PrinterHelper.getInstance().initPrinter(_context.getPackageName(), null);
+                    result.success(true);
                 }
                 break;
             case "getPrinterStatus":
@@ -231,6 +244,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                     result.success(true);
                 } catch (Exception err) {
                     Log.e("IminPrinter", err.getMessage());
+                    result.error(err.getMessage(), null, null);
                 }
                 break;
             case "printText":
@@ -305,6 +319,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                     result.success(true);
                 } catch (Exception err) {
                     Log.e("IminPrinter", "printSingleBitmap:" + err.getMessage());
+                    result.error(err.getMessage(), null, null);
                 }
                 break;
             case "printBitmapToUrl":
@@ -394,6 +409,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                     result.success(true);
                 } catch (Exception err) {
                     Log.e("IminPrinter", "printSingleBitmapBlackWhite:" + err.getMessage());
+                    result.error(err.getMessage(), null, null);
                 }
                 break;
             case "printMultiBitmap":
@@ -420,6 +436,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                     result.success(true);
                 } catch (Exception err) {
                     Log.e("IminPrinter", "printMultiBitmap:" + err.getMessage());
+                    result.error(err.getMessage(), null, null);
                 }
                 break;
             case "setQrCodeSize":
@@ -541,6 +558,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                     result.success(true);
                 } catch (Exception e) {
                     Log.e("IminPrinter", e.getMessage());
+                    result.error(e.getMessage(), null, null);
                 }
                 break;
             case "setDoubleQRSize":
@@ -676,6 +694,8 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                 if (iminPrintUtils == null) {
                     List<String> encodeList = PrinterHelper.getInstance().getEncodeList();
                     result.success(encodeList);
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "setPrinterEncode":
@@ -689,6 +709,8 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                 if (iminPrintUtils == null) {
                     String curEncode = PrinterHelper.getInstance().getCurEncode();
                     result.success(curEncode);
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
 
@@ -696,6 +718,8 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                 if (iminPrintUtils == null) {
                     List<String> printerDensityList = PrinterHelper.getInstance().getPrinterDensityList();
                     result.success(printerDensityList);
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "setPrinterDensity":
@@ -708,12 +732,16 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
             case "getPrinterDensity":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getPrinterDensity());
+                }else {
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getPrinterSpeedList"://4. speed
                 if (iminPrintUtils == null) {
                     List<String> printerSpeedList = PrinterHelper.getInstance().getPrinterSpeedList();
                     result.success(printerSpeedList);
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "setPrinterSpeed":
@@ -727,17 +755,23 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                 if (iminPrintUtils == null) {
                     int printerSpeed = PrinterHelper.getInstance().getPrinterSpeed();
                     result.success(printerSpeed);
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getPrinterPaperTypeList"://5. Paper width
                 if (iminPrintUtils == null) {
                     List<String> printerPaperTypeList = PrinterHelper.getInstance().getPrinterPaperTypeList();
                     result.success(printerPaperTypeList);
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getPrinterPaperType":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getPrinterPaperType());
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getPrinterSerialNumber":
@@ -755,12 +789,11 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
 
                         @Override
                         public void onRaiseException(int code, String msg) throws RemoteException {
-
+                            result.error(msg, null, null);
                         }
 
                         @Override
                         public void onPrintResult(int code, String msg) throws RemoteException {
-
                         }
                     });
                 }
@@ -780,7 +813,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
 
                         @Override
                         public void onRaiseException(int code, String msg) throws RemoteException {
-
+                            result.error(msg, null, null);
                         }
 
                         @Override
@@ -805,7 +838,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
 
                         @Override
                         public void onRaiseException(int code, String msg) throws RemoteException {
-
+                            result.error(msg, null, null);
                         }
 
                         @Override
@@ -830,7 +863,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
 
                         @Override
                         public void onRaiseException(int code, String msg) throws RemoteException {
-
+                            result.error(msg, null, null);
                         }
 
                         @Override
@@ -843,6 +876,8 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
             case "getServiceVersion":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getServiceVersion());
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getPrinterHardwareVersion":
@@ -860,7 +895,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
 
                         @Override
                         public void onRaiseException(int code, String msg) throws RemoteException {
-
+                            result.error(msg, null, null);
                         }
 
                         @Override
@@ -873,11 +908,15 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
             case "getUsbPrinterVidPid":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getUsbPrinterVidPid());
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getUsbDevicesName":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getUsbDevicesName());
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
 
@@ -896,7 +935,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
 
                         @Override
                         public void onRaiseException(int code, String msg) throws RemoteException {
-
+                            result.error(msg, null, null);
                         }
 
                         @Override
@@ -922,7 +961,7 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
 
                         @Override
                         public void onRaiseException(int code, String msg) throws RemoteException {
-
+                            result.error(msg, null, null);
                         }
 
                         @Override
@@ -935,21 +974,29 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
             case "getPrinterMode":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getPrinterMode());
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getDrawerStatus":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getDrawerStatus());
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "getOpenDrawerTimes":
                 if (iminPrintUtils == null) {
                     result.success(PrinterHelper.getInstance().getOpenDrawerTimes());
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "printerSelfChecking":
                 if (iminPrintUtils == null) {
                     PrinterHelper.getInstance().printerSelfChecking(null);
+                }else{
+                    result.error("Not supported!", null, null);
                 }
                 break;
             case "sendRAWData":
@@ -1098,7 +1145,10 @@ public class IminPrinterPlugin implements FlutterPlugin, MethodCallHandler, Stre
                     }
                     if (iminPrintUtils == null) {
                         PrinterHelper.getInstance().printColumnsString(colsText, colsWidth, colsAlign, colsFontSize, null);
+                    }else{
+                        iminPrintUtils.printColumnsText(colsText, colsWidth, colsAlign, colsFontSize);
                     }
+
                     result.success(true);
                 } catch (Exception err) {
                     Log.e("IminPrinter", err.getMessage());

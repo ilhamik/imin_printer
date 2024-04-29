@@ -14,7 +14,7 @@ if (localPropertiesFile.exists()) {
 def flutterRootPath = localProperties.getProperty('flutter.sdk')
 
 if (flutterRootPath == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw new Exception("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 String storageUrl = System.getenv('FLUTTER_STORAGE_BASE_URL') ?: "https://storage.googleapis.com"
